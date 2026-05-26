@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuantaSneaks — Limited Drop</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #050510;
+            color: #fff;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                linear-gradient(rgba(100,200,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(100,200,255,0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 18px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(100,200,255,0.08);
+            z-index: 100;
+        }
+
+        nav img { height: 72px; }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 32px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.45);
+            letter-spacing: 0.5px;
+        }
+
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 100px 48px 48px;
+            gap: 40px;
+            z-index: 1;
+        }
+
+        .hero-content { flex: 1; max-width: 580px; }
+
+        .badge {
+            display: inline-block;
+            background: rgba(79,172,254,0.12);
+            border: 1px solid rgba(79,172,254,0.3);
+            color: #64c8ff;
+            padding: 7px 18px;
+            border-radius: 20px;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+        }
+
+        h1 {
+            font-size: clamp(52px, 7vw, 88px);
+            font-weight: 900;
+            line-height: 0.95;
+            letter-spacing: -2px;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #ffffff 0%, #64c8ff 55%, #b87fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            font-size: 17px;
+            color: rgba(255,255,255,0.45);
+            line-height: 1.7;
+            margin-bottom: 40px;
+            max-width: 440px;
+        }
+
+        .timer-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 40px;
+        }
+
+        .timer-unit { text-align: center; min-width: 64px; }
+
+        .timer-val {
+            display: block;
+            font-size: 40px;
+            font-weight: 900;
+            font-variant-numeric: tabular-nums;
+            color: #fff;
+        }
+
+        .timer-label {
+            display: block;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: rgba(255,255,255,0.3);
+            margin-top: 2px;
+        }
+
+        .timer-sep {
+            font-size: 36px;
+            color: rgba(255,255,255,0.2);
+            font-weight: 300;
+            padding-bottom: 14px;
+            margin: 0 4px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 48px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .stat-val {
+            font-size: 30px;
+            font-weight: 800;
+            color: #64c8ff;
+        }
+
+        .stat-lbl {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255,255,255,0.35);
+            margin-top: 2px;
+        }
+
+        .buy-form {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        select {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(100,200,255,0.2);
+            color: #fff;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-size: 15px;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        select:focus { border-color: rgba(100,200,255,0.5); }
+        select option { background: #0d0d20; }
+
+        .btn-buy {
+            background: linear-gradient(135deg, #4facfe 0%, #a855f7 100%);
+            color: #fff;
+            border: none;
+            padding: 15px 44px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            box-shadow: 0 0 32px rgba(79,172,254,0.25);
+            transition: transform 0.18s, box-shadow 0.18s;
+        }
+
+        .btn-buy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 52px rgba(79,172,254,0.45);
+        }
+
+        .btn-buy:active { transform: translateY(0); }
+
+        .fine-print {
+            margin-top: 14px;
+            font-size: 12px;
+            color: rgba(255,255,255,0.25);
+        }
+
+        .hero-visual {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 500px;
+        }
+
+        .glow {
+            position: absolute;
+            width: 480px;
+            height: 480px;
+            background: radial-gradient(circle, rgba(79,172,254,0.12) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(79,172,254,0.12);
+        }
+
+        .ring-1 { width: 500px; height: 500px; animation: spin 18s linear infinite; }
+        .ring-2 { width: 620px; height: 620px; border-color: rgba(168,85,247,0.08); animation: spin 26s linear infinite reverse; }
+        .ring-3 { width: 740px; height: 740px; border-color: rgba(79,172,254,0.05); animation: spin 36s linear infinite; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .sneaker {
+            position: relative;
+            width: 480px;
+            max-width: 85%;
+            filter: drop-shadow(0 0 48px rgba(79,172,254,0.35));
+            animation: float 4.5s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(-4deg); }
+            50% { transform: translateY(-22px) rotate(-4deg); }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <img src="?asset=logo.png" alt="QuantaSneaks">
+        <ul>
+            <li>Drop Details</li>
+            <li>Sizing Guide</li>
+            <li>About</li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="badge">⚡ Limited Drop — 500 Pairs Only</div>
+            <h1>QUANTA<br>SNEAKS</h1>
+            <p class="tagline">Quantum-engineered soles. AI-verified drops.<br>The future of footwear lands now.</p>
+
+            <div class="timer-row">
+                <div class="timer-unit"><span class="timer-val" id="h">--</span><span class="timer-label">Hours</span></div>
+                <span class="timer-sep">:</span>
+                <div class="timer-unit"><span class="timer-val" id="m">--</span><span class="timer-label">Mins</span></div>
+                <span class="timer-sep">:</span>
+                <div class="timer-unit"><span class="timer-val" id="s">--</span><span class="timer-label">Secs</span></div>
+            </div>
+
+            <div class="stats">
+                <div><div class="stat-val">500</div><div class="stat-lbl">Pairs Available</div></div>
+                <div><div class="stat-val">$299</div><div class="stat-lbl">Retail Price</div></div>
+                <div><div class="stat-val">AI</div><div class="stat-lbl">Verified Drop</div></div>
+            </div>
+
+            <form class="buy-form" method="POST" action="{{ORDER_LAMBDA_URL}}">
+                <select name="size" required>
+                    <option value="" disabled selected>Select Size (US)</option>
+                    <option value="7">US 7</option>
+                    <option value="8">US 8</option>
+                    <option value="9">US 9</option>
+                    <option value="10">US 10</option>
+                    <option value="11">US 11</option>
+                    <option value="12">US 12</option>
+                </select>
+                <button type="submit" class="btn-buy">CLAIM YOUR PAIR →</button>
+            </form>
+            <p class="fine-print">⚡ AI-powered verification · One pair per customer · Final sale</p>
+        </div>
+
+        <div class="hero-visual">
+            <div class="ring ring-1"></div>
+            <div class="ring ring-2"></div>
+            <div class="ring ring-3"></div>
+            <div class="glow"></div>
+            <img class="sneaker" src="?asset=sneaker.png" alt="QuantaSneaks">
+        </div>
+    </section>
+
+    <script>
+        const drop = new Date(Date.now() + 2 * 60 * 60 * 1000);
+        function tick() {
+            const d = drop - Date.now();
+            if (d <= 0) {
+                document.querySelector('.timer-row').innerHTML = '<div style="color:#64c8ff;font-size:20px;font-weight:700;letter-spacing:2px">DROP IS LIVE</div>';
+                return;
+            }
+            const pad = n => String(Math.floor(n)).padStart(2, '0');
+            document.getElementById('h').textContent = pad(d / 3600000);
+            document.getElementById('m').textContent = pad((d % 3600000) / 60000);
+            document.getElementById('s').textContent = pad((d % 60000) / 1000);
+        }
+        tick();
+        setInterval(tick, 1000);
+    </script>
+</body>
+</html>

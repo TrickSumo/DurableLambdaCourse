@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Status — QuantaSneaks</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #050510;
+            color: #fff;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo { position: fixed; top: 24px; left: 40px; }
+        .logo img { height: 40px; }
+
+        .card {
+            background: rgba(255,255,255,0.025);
+            border: 1px solid rgba(100,200,255,0.12);
+            border-radius: 24px;
+            padding: 52px 48px;
+            width: 460px;
+            max-width: 92vw;
+            text-align: center;
+        }
+
+        .order-id {
+            font-size: 11px;
+            color: rgba(255,255,255,0.25);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 36px;
+        }
+
+        .icon { font-size: 52px; margin-bottom: 20px; }
+
+        .title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .sub {
+            font-size: 14px;
+            color: rgba(255,255,255,0.4);
+            line-height: 1.6;
+        }
+
+        .spinner {
+            width: 52px; height: 52px;
+            border: 3px solid rgba(100,200,255,0.15);
+            border-top-color: #64c8ff;
+            border-radius: 50%;
+            animation: spin 0.75s linear infinite;
+            margin: 0 auto 24px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .risk-pill {
+            display: inline-block;
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 18px;
+        }
+
+        .risk-low    { background: rgba(34,197,94,0.15);  color: #22c55e; border: 1px solid rgba(34,197,94,0.3); }
+        .risk-medium { background: rgba(251,191,36,0.15); color: #fbbf24; border: 1px solid rgba(251,191,36,0.3); }
+        .risk-high   { background: rgba(239,68,68,0.15);  color: #ef4444; border: 1px solid rgba(239,68,68,0.3); }
+    </style>
+</head>
+<body>
+    <div class="logo"><img src="?asset=logo.png" alt="QuantaSneaks"></div>
+
+    <div class="card">
+        <div class="order-id">Order · {{ORDER_ID}}</div>
+        <div id="content">
+            <div class="spinner"></div>
+            <div class="title">Verifying your claim…</div>
+            <div class="sub">AI is analyzing your request</div>
+        </div>
+    </div>
+
+    <script>
+        const orderId = '{{ORDER_ID}}';
+
+        function render(order) {
+            const s = order.status;
+            if (s === 'processing') return `
+                <div class="spinner"></div>
+                <div class="title">Verifying your claim…</div>
+                <div class="sub">AI is analyzing your request. Hang tight.</div>
+            `;
+            if (s === 'awaiting_approval') return `
+                <div class="icon">⏳</div>
+                <div class="title">Pending Admin Review</div>
+                <div class="sub">Payment confirmed. Our team is reviewing your order.</div>
+                ${order.riskLevel ? `<div class="risk-pill risk-${order.riskLevel}">Risk: ${order.riskLevel}</div>` : ''}
+            `;
+            if (s === 'shipped') return `
+                <div class="icon">🚀</div>
+                <div class="title">You're getting your QuantaSneaks!</div>
+                <div class="sub">Order confirmed and on its way to you.</div>
+            `;
+            if (s === 'compensated') return `
+                <div class="icon">❌</div>
+                <div class="title">Claim Not Approved</div>
+                <div class="sub">Your spot has been released. Better luck next drop.</div>
+            `;
+            return `<div class="spinner"></div><div class="title">Loading…</div>`;
+        }
+
+        async function poll() {
+            const res = await fetch(`?action=poll&orderId=${orderId}`);
+            const order = await res.json();
+
+            if (order.status === 'awaiting_payment') {
+                window.location.href = `?view=payment&orderId=${orderId}`;
+                return;
+            }
+
+            document.getElementById('content').innerHTML = render(order);
+
+            const terminal = ['shipped', 'compensated'];
+            if (!terminal.includes(order.status)) setTimeout(poll, 3000);
+        }
+
+        poll();
+    </script>
+</body>
+</html>

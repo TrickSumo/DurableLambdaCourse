@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Payment — QuantaSneaks</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #050510;
+            color: #fff;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .logo { position: fixed; top: 24px; left: 40px; }
+        .logo img { height: 40px; }
+
+        .card {
+            background: rgba(255,255,255,0.025);
+            border: 1px solid rgba(100,200,255,0.12);
+            border-radius: 24px;
+            padding: 48px;
+            width: 460px;
+            max-width: 92vw;
+            text-align: center;
+        }
+
+        .sneaker-preview {
+            width: 220px;
+            margin: 0 auto 28px;
+            filter: drop-shadow(0 0 24px rgba(79,172,254,0.3));
+        }
+
+        h2 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+
+        .order-id {
+            font-size: 11px;
+            color: rgba(255,255,255,0.25);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+        }
+
+        .price {
+            font-size: 52px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #64c8ff, #b87fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 32px;
+        }
+
+        .btn-pay {
+            background: linear-gradient(135deg, #4facfe 0%, #a855f7 100%);
+            color: #fff;
+            border: none;
+            padding: 18px 0;
+            width: 100%;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 0 32px rgba(79,172,254,0.25);
+            transition: transform 0.18s, box-shadow 0.18s;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-pay:hover { transform: translateY(-2px); box-shadow: 0 0 52px rgba(79,172,254,0.45); }
+        .btn-pay:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .secure { margin-top: 14px; font-size: 12px; color: rgba(255,255,255,0.25); }
+
+        .countdown-val {
+            font-size: 56px;
+            font-weight: 900;
+            color: #64c8ff;
+            margin: 16px 0 8px;
+        }
+
+        .success-icon { font-size: 52px; margin-bottom: 16px; }
+
+        #redirecting { display: none; }
+    </style>
+</head>
+<body>
+    <div class="logo"><img src="?asset=logo.png" alt="QuantaSneaks"></div>
+
+    <div class="card">
+        <img class="sneaker-preview" src="?asset=sneaker.png" alt="QuantaSneaks">
+        <h2>Complete Your Order</h2>
+        <div class="order-id">Order · {{ORDER_ID}}</div>
+
+        <div id="payment-form">
+            <div class="price">$299</div>
+            <button class="btn-pay" id="payBtn" onclick="pay()">PAY NOW →</button>
+            <p class="secure">🔒 Secure checkout · 1 pair per customer</p>
+        </div>
+
+        <div id="redirecting">
+            <div class="success-icon">✅</div>
+            <div style="font-size:18px;font-weight:600;margin-bottom:8px;">Payment confirmed!</div>
+            <div class="countdown-val" id="count">3</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.35);">Redirecting to your order status…</div>
+        </div>
+    </div>
+
+    <script>
+        const orderId = '{{ORDER_ID}}';
+
+        async function pay() {
+            const btn = document.getElementById('payBtn');
+            btn.disabled = true;
+            btn.textContent = 'Processing…';
+
+            await fetch('?action=pay', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderId })
+            });
+
+            document.getElementById('payment-form').style.display = 'none';
+            document.getElementById('redirecting').style.display = 'block';
+
+            let n = 3;
+            const t = setInterval(() => {
+                n--;
+                document.getElementById('count').textContent = n;
+                if (n === 0) {
+                    clearInterval(t);
+                    window.location.href = `?view=status&orderId=${orderId}`;
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
