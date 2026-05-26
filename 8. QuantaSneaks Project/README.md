@@ -1,4 +1,4 @@
-# QuantaSneaks — Saga Pattern Demo
+# QuantaSneaks
 
 Limited-edition sneaker drop powered by AWS Lambda Durable Functions. Demonstrates the saga pattern with two human-in-the-loop gates, LLM risk scoring, compensation stack, and status polling.
 
@@ -42,7 +42,7 @@ Compensations are stored in a stack and run in **reverse order** on any failure 
 
 ---
 
-## DynamoDB Table — `quantasneaks`
+## DynamoDB Table - `quantasneaks`
 
 **Partition key:** `orderId` (String)
 
